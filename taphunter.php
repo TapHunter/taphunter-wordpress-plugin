@@ -39,7 +39,7 @@ function bookwormr_conf() {
 function taphunter_get($url) {
     if (function_exists('wp_remote_get')) {
         // Function was added in WP2.7
-        $response = wp_remote_get($url);
+        $response = wp_remote_get($url, array( 'timeout' => 15 ));
         if(!is_wp_error($response)) {
             return $response['body'];
         } else {
@@ -89,7 +89,7 @@ function taphunter_widgeturl_v1($settings) {
 
 
 // [taphunter location=1234567]
-// [taphunter location=1234567 type="spirits|cocktails|taps|bottles|ondeck|tapsandbottles"]
+// [taphunter location=1234567 type="taps(default)|bottles|ondeck|tapsandbottles|allbeer|spirits|cocktails"]
 // [taphunter location=1234567 stylesheet="<url>"]
 // [taphunter location=1234567 order="name|tapnumber|style|category"]
 // [taphunter location=1234567 title="<string>"]
@@ -97,7 +97,7 @@ function taphunter_widgeturl_v1($settings) {
 function taphunter_shortcode($atts) {
     // Shortcode attributes are ALWAYS lowercase
     $settings = shortcode_atts(array(
-        'version' => 1,
+        'version' => '1',
         'location' => '',
         'type' => '',
         'title' => '',
@@ -126,7 +126,7 @@ function taphunter_shortcode($atts) {
     ), $atts);
 
     if ($settings['location'] !== '') {
-        if ($settings['version'] == 1) {
+        if ($settings['version'] === '1') {
             return taphunter_get(taphunter_widgeturl_v1($settings));
         } else {
             return 'Please upgrade your TapHunter WordPress plugin. The current version is ' . TAPHUNTER_PLUGIN_VERSION;
